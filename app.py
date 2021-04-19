@@ -17,9 +17,17 @@ def about():
 
 @app.route('/articles')
 def articles():
-    articles = Articles ()
+    articles = Articles()
     # print(articles[0]['title']) #consol 창에 나타남 
     return render_template("articles.html", articles = articles)
+
+@app.route('/article/<int:id>') #params 로 이용하기 : <변수명> 으로 적어줌 
+def article(id) :
+    articles = Articles()
+    article = articles[id-1]
+    print(articles[id-1])
+    return render_template("article.html", article = article)
+
 
 if __name__ == '__main__' : #app.py에서 이 부분을 가장 먼저 실행함! / 서버 띄우는 곳에 적어줌
     app.run()
