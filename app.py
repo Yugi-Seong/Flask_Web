@@ -135,24 +135,35 @@ def register():
 @app.route('/login', methods=['GET','POST'])
 def login():
     cursor = db.cursor()
+
     if request.method == "POST" :
 
-        username = request.form['username']
+        email = request.form['email']   #login.html 에서 name = email 로 받아오면 여기 부분에서 email 로 받기 
         password_1 = request.form['password']
         # print(username)
         # print(password_1)
 
         #db에서 비밀번호 조회
         sql =  'SELECT * FROM users WHERE email = %s ;'
-        input_data = [username]
+        input_data = [email]
         cursor.execute(sql,input_data)
-        password = cursor.fetchone()
-        print(password[0])
+        user = cursor.fetchone()
 
-        if sha256_crypt.verify(password_1,password[0]) :
-            return "Success"
-        else : 
-            return password[0]
+        if user == None :  #ID가 존재하지 않을 경우 
+            print(user)
+            return redirect('/register')
+        else :
+            if sha256_crypt.verify(password_1, user[4]) : 
+                return redirect('/articles')
+            else : 
+                return user[4]
+    else :
+        return render_template('login.html')
+
+        
+         
+
+      
 
 
 
