@@ -1,6 +1,8 @@
 from flask import Flask , render_template, request, redirect 
 from data import Articles
 import pymysql
+from passlib.hash import sha256_crypt
+
 
 app = Flask(__name__) # 내장변수를 이용해 Flask 객체 생성 
 
@@ -83,6 +85,8 @@ def delete(id):
     db.commit()
     return redirect("/articles")
 
+
+#articles글 수정하기 
 @app.route('/<int:id>/edit', methods=["GET","POST"])
 def edit(id) :
     cursor = db.cursor()
@@ -107,23 +111,25 @@ def edit(id) :
         # print(topic[1]) 
         return render_template("edit_article.html", article = topic)
 
+# 회원가입
 @app.route("/register", methods = ["GET","POST"])
 def register():
     cursor = db.cursor()
+
     if request.method == "POST" : 
         name = request.form['name']
         email = request.form['email']
         username = request.form['username']
-        password = request.form['password']
+        password = sha256_crypt.encrypt(request.form['password'])
         sql = "INSERT INTO `users` (`name`, `email`, `username`, `password`) VALUES (%s,%s,%s,%s);"
         input_data = [name,email,username,password]
-
         cursor.execute(sql, input_data)
         db.commit()
-        return redirect("/register")
+        return redirect("/")
 
     else :
         return render_template("register.html")
+
 
 
 
