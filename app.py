@@ -53,11 +53,11 @@ def add_articles():
     cursor = db.cursor()
     if request.method == "POST" :  # form을 이용해서 submit을 하는 형태 ('POST')방식
         author = request.form['author']
-        print(request.form['author'])
+        # print(request.form['author'])
         title = request.form['title']
-        print(request.form['title'])
+        # print(request.form['title'])
         desc = request.form['desc']
-        print(request.form['desc'])
+        # print(request.form['desc'])
 
         sql = "INSERT INTO `topic` (`title`, `body`, `author`) VALUES (%s, %s, %s);"
         input_data = [title,desc,author]
@@ -83,6 +83,15 @@ def delete(id):
     # cursor.execute(sql)
     db.commit()
     return redirect("/articles")
+
+@app.route('/<int:id>/edit', methods=["GET","POST"])
+def edit(id) :
+    if request.method == "POST" :
+        return "Success"
+
+    else :
+        return render_template("edit_articles.html")
+
 
 
 if __name__ == '__main__' : #app.py에서 이 부분을 가장 먼저 실행함! / 서버 띄우는 곳에 적어줌
