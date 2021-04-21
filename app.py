@@ -31,7 +31,7 @@ def about():
 def articles():
     cursor = db.cursor()
     sql = 'SELECT * FROM topic ;'
-    cursor.execute(sql)
+    cursor.execute(sql) #sql 쿼리 실행 
     topics = cursor.fetchall()
     # print(topics)
     # articles = Articles()
@@ -125,12 +125,34 @@ def register():
         input_data = [name,email,username,password]
         cursor.execute(sql, input_data)
         db.commit()
+        # return "Success"
         return redirect("/")
 
     else :
         return render_template("register.html")
 
+#로그인
+@app.route('/login', methods=['GET','POST'])
+def login():
+    cursor = db.cursor()
+    if request.method == "POST" :
 
+        username = request.form['username']
+        password_1 = request.form['password']
+        # print(username)
+        # print(password_1)
+
+        #db에서 비밀번호 조회
+        sql =  'SELECT * FROM users WHERE email = %s ;'
+        input_data = [username]
+        cursor.execute(sql,input_data)
+        password = cursor.fetchone()
+        print(password[0])
+
+        if sha256_crypt.verify(password_1,password[0]) :
+            return "Success"
+        else : 
+            return password[0]
 
 
 
